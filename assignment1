@@ -1,0 +1,194 @@
+				Assignment 1
+				   CS 320
+
+This is the first [mini-]assignment for CS320.  Each assignment will be mailed
+to you, but I have also put a copy of this first one in your home directory.
+Future assignments, such as assignment2, will [only] be sent to you via mail.
+Directions for all assignments and programs can also be found under ~cs570
+on edoras.
+
+If you are new to UNIX, there are several tutorials at:
+http://edoras.sdsu.edu/doc/unixtut/
+The page
+https://library.sdsu.edu/computers-technology/hosting/instructor-class-accounts#edoras-software
+...has lots of useful information, including how to recover deleted files
+using the 'goback' and 'recover' commands.
+
+To access your mail on edoras, simply type
+mail
+...and you will get a list of messages, which you can read one at a time.  Or:
+mail carroll
+...will allow you to compose a mail message to me.
+
+http://edoras.sdsu.edu/software/ contains quite a bit of software that
+may be of use to you (and a lot of it is not related to UNIX; for example,
+SDSU students can download the McAfee VirusScan software for the horribly
+insecure Microsoft Windows platform -- but you need a RedID to do this).
+
+You may wish to peruse the 'Email' section on this page, for things that
+might be better than clunky-old-mail (mailx).  The 'File Editors' section
+lists various choices of editors, though I *STRONGLY* urge you to become
+acquainted with vi (vim).  The xeroxed notes have a summary of most of the
+commands, along with a 'cheat sheet' that shows the keyboard layout.
+
+Unless you plan to do all your work from the labs on campus, you will need
+software to allow you to work from home.  These can be found in the 'Internet'
+section.  ssh and X-Win32 are discussed below, but your best bet is to get
+the [free] home edition of MobaXterm from
+
+https://mobaxterm.mobatek.net/download.html
+e.g.,
+https://download.mobatek.net/10520180106182002/MobaXterm_Installer_v10.5.zip
+
+ssh gives you an 80x24 login window to edoras from within WinBlows via:
+http://edoras.sdsu.edu/files/SSHSecureShellClient-3.2.9.exe
+(If you are running a UNIX system, then you probably have ssh already, and
+you can run any X application on edoras and display it remotely on your laptop.)
+If you install ssh on Windows, your Start menu will have an ssh submenu
+from which you can run either the Secure Shell Client or the Secure File
+Transfer Client.  In either case, when making a connection, you'll have to
+specify the host (edoras.sdsu.edu), the username (your personal cssc0nnn number),
+and then it will ask for your password.  With the Secure File Transfer Client,
+you'll be able to see all your edoras files and directories on your Windows
+host, and you can move files between machines simply by dragging them from
+one panel to the other.  [CAUTION: You may be tempted to use this facility
+to edit your programs with a Windows editor and move the file to edoras.
+I strongly recommend you learn to use the vim UNIX editor (which you can
+also install for free on your Windows machine if you really like it), and
+do your editing on edoras.  If you insist on moving source files, though, choose
+Secure File Transfer Client --> Operation --> File Transfer Mode --> ASCII
+...or else the edoras compilers may complain about inappropriate white space
+in your source code.]
+
+UNIX users (Mac and Linux people) don't have to install anything.  Just
+launch a terminal window and give a command like
+ssh cssc0nnn@edoras.sdsu.edu
+or 
+ssh edoras.sdsu.edu -l cssc0nnn
+(The first time [only] that you do this, you'll have to answer "yes" to the
+fingerprint/authenticity question.)
+
+You can also run X from WinBlows, but you'll need your RedID and:
+http://edoras.sdsu.edu/~download/xwin32.html
+...though this will only be effective when you're on campus.
+(If you have some spare disk space on your laptop/desktop, I recommend
+skipping the xwin32 stuff, and instead making your machine a dual-boot
+Linux/WinBlows machine (this allows you to use X even when you're off
+campus).  You can do this for free, and get acquainted with something
+professional instead of the horrid Microsoft stuff.  I recommend:
+http://linuxmint.com/
+...and when you're ready to abandon WinBlows completely, see me about installing
+your games and other stuff that supposedly 'needs' a Microsoft platform to run).
+
+Once you log in, you will see your standard prompt, which will look like:
+edoras:cssc0nnn[1]%
+[cssc0099@edoras ~]$
+or
+edoras ~[1]%
+...depending on what shell you are using.  Your prompt will change as you work,
+and the significance of that number in the prompt will be discussed later.
+
+Your first task is to change your account password.  Do not choose
+something obvious, or even a word in the dictionary, or your account
+might be broken into.  Reasonable choices include sequences which
+include a non-letter (but don't just put a digit on the end of a word,
+as this is also easily guessed).  Enter
+passwd
+and then answer the questions - for security reasons, what you type will
+not appear on the screen.
+
+Second, experiment with the finger command by typing:
+finger -m $user
+to see your own information.  Compare this to mine:
+finger -m carroll
+Now use:
+chfn
+to update your finger entry.  You must place a proper entry in the Name field,
+which must include your first and last name.  You can view your results with
+finger cssc0nnn
+...and verify that the 'In real life:' field contains your real name (type
+the digits of your actual account number in place of the 'nnn' of course).
+Note that you are not done interacting with chfn until you get the normal shell
+prompt back; chfn will ask for additional information, such as phone numbers,
+which you should leave blank.  (You can always run chfn again, if you mess
+things up.)
+
+Third, use the chsh command to ensure that tcsh is your login shell.  Type
+chsh
+...and then type
+/bin/tcsh
+...when it asks for your new shell.
+
+Fourth, create a soft link to the course calendar file:
+cd $HOME
+ln -s ~cs320/calendar
+Shell variables begin with '$', and lots of them are predefined.
+'$HOME' is a string denoting your home directory (as is '~').
+ln -s ~cs320/calendar
+does the same thing as
+ln -s ~cs320/calendar ./calendar
+(That is, it creates a 'shortcut' with the same name in your current directory.)
+If this command is successful, you can do
+cat ~/calendar
+...to see the contents of the /home/ma/cs320/calendar file, which will be
+updated with due dates for our programs, assignments, and exams.  If a file
+called 'calendar' is in your home directory, every day at midnight a UNIX
+daemon will awaken, look at the dates in this file, and send you an email
+containing all the lines that match today's date (as well as tomorrow's date).
+
+Fifth, create and edit a ~/.forward file to redirect your email.  This should
+be a two-line file containing something like:
+
+\cssc0nnn,
+yourmailname@gmail.com-or-wherever
+
+Put your actual cssc-username on line 1, preceded by the backslash.
+[This is VERY important -- you get an infinite loop of mail deliveries
+otherwise! Make sure you use a backslash (\), NOT a forward slash (/) .]
+On line 2, list your gmail or yahoo or whatever account you use most for mail.
+To create this file, I recommend:
+vi ~/.forward
+
+Once you think you have it right, TEST your file by sending yourself some mail:
+
+mail cssc0nnn
+...and just send a little 'hi there' message.  You end your message with
+a single period on an otherwise empty (last) line; ^D (Control-D) at the
+start of a line can also be used to end the message.  Give the system a few
+minutes to process your mail (EVERYTHING gets scanned for viruses and spam
+content, so mail is not delivered instantaneously) and then check your mail
+to see if it arrived (here in your edoras acccount, as well as the account
+you listed on line 2).  This should be a TWO-line file (not 1, not 3).
+
+The entire set of UNIX manuals is on-line, available through the 'man' command.
+Lastly, type:
+man finger
+...to see the entry for finger.  To find useful information when you are not
+sure of the command name, use apropos:
+apropos printer
+...will give you a list of man entries pertaining to the printer
+(specifically, it displays those entries with the character sequence 'printer'
+somewhere in the command summary line).
+
+You will find a file called 'assignment1' in the home directory of your account;
+it contains this text.
+This file, and all the other ones relevant to this course, are publicly
+available under the /home/ma/cs320 directory; some C-related files can
+be found under ~masc0000, principally under the Week* directories.
+Below ~masc0000/CbyDiscovery/ch*/ are the various .c files in the Foster text.
+
+Summary of Assignment 1:
+1. Change your password
+2. Change your finger information
+3. Change your shell to tcsh
+4. Make a [soft] link to the calendar file
+5. Create a ~/.forward file that sends your mail to two places
+6. Send some mail to yourself
+7. Experiment with the "finger", "man" and "apropos" commands
+(Do these experiments in the cssc account that I have given you; if you do these
+tasks elsewhere, I won't be able to ascertain if you have actually done them.
+Make sure you don't just kill the ssh window you are using when you are through;
+exit gracefully by typing 'logout' or 'exit' before shutting ssh down.)
+
+The due date for this assignment (and all future assignments) can be found
+in the file ~cs320/calendar on edoras.

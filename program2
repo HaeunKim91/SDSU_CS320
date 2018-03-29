@@ -1,0 +1,341 @@
+				Program 2
+				  CS320
+
+Reread the Policy statement at the beginning of the class notes; you MUST do
+your own work on all assignments and programs.  The file ~cs320/calendar will
+contain all published deadlines, including occasional extra credit deadlines.
+
+You will need use the p2.dws file that you copied and modifed when you
+did Assignment 2.  The material you want graded MUST be in ~/Two/p2.dws
+in your account on edoras by the due date to receive any credit for Program 2.
+(so that my automation can retrieve a copy for me to test 'by hand').
+
+Every programming assignment for this class must be developed and run on edoras
+...except for this one.  For Program 2, you have the option of developing this
+on your home machine, and then transferring the workspace to edoras (by the
+deadline) for grading.  You'll begin by using the same p2.dws that you edited
+for Assignment 2.
+
+That p2 workspace contains more than just the ident function that you edited:
+there are other convenient functions and variables (MAKE_HANDS, CAR1, etc.)
+If you need to fetch a fresh copy of p2.dws from the ~cs320 directory,
+don't forget to edit the ident function and insert your name again!
+(And modify the yes/no questions, if you did some extra credit.)
+
+It's possible to just use dyalog on edoras and edit the p2.dws file there,
+but it will probably be more convenient to work on a local copy, and ship
+it back and forth to edoras.
+
+CAUTION: This is a binary file, not a text file.  It will be mangled if you
+transfer it in ASCII mode.  Therefore, when using sftp to move the file,
+make sure you do:
+Secure File Transfer Client --> Operation --> File Transfer Mode --> Binary
+...so that you get the un-mangled version!  (This is a WinBlows issue only;
+if you have a Mac or linux host, scp will Do The Right Thing automatically.)
+
+Once you have a copy of the p2 workspace in your preferred location,
+fire it up and issue the command:
+)load p2
+...to gain access to the functions/variables I have defined in this workspace.
+(If you're not in the correct directory, you may need to specify a full
+pathname rather than just 'p2'.)
+
+Under the ~cs320/Two/ directory, you will find a p2 workspace which contains a
+few convenient functions and variables (ident, MAKE_HANDS, CHARS and CAR1 through
+CAR5).  If you are using dyalog at home, you need ~cs320/Two/p2.dws copied to
+your home machine (but you must later copy your improved, completed version to
+~/Two/p2.dws in your cssc account).  (You can just use the ~/Two/p2.dws
+file from the previous assignment; remember, if you instead use the generic
+copy in ~cs320/Two/p2.dws, don't forget to edit the ident function again!)
+
+Once you have a copy of the p2 workspace in your preferred location,
+fire it up and issue the command:
+)load p2
+...to gain access to the functions/variables I have defined in this workspace.
+(On a Windows PC, you'll need to put p2.dws into your "My Documents" folder,
+or in some cases on your desktop, so that dyalog can find it without specifying
+a full path.)
+
+The MAKE_HANDS function in the p2 workspace simply defines the various [global]
+variables CHARS, and CAR1 through CAR5.  CHARS is simply the list of 'legal'
+license plate letters: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ
+...and the others contain collections of typical license plates. Type:
+CAR4
+...to see the (two-dimensional) character array representing 4 'random'
+license plates.  (The MAKE_HANDS function is provided to conveniently
+regenerate CHARS and CAR1 through CAR5, in case you somehow blow those
+variables away during your experiments, but is otherwise not needed.)
+
+After you have created/edited your line[s] of code, make sure you ")save" your
+work (or do ")save somenewname.dws" ).  CAUTION: if you simply quit instead,
+the changes will be lost.
+
+WHAT TO PROGRAM:
+Your program2 will modify the p2 workspace and define two functions related to
+'license plate poker', a game designed to keep the little ones in the back
+seat from driving you nuts on long car trips.  Each child picks out a license
+plate on a nearby car, and tries to make a poker hand out of it.  For example,
+WZ636Z6
+is a "full house" (three sixes and a pair of Z's).  Your task is to program DEAL
+(which creates license plates) and SCORE (which determines the best 'hand').
+
+(1) Create a function called DEAL which will [randomly] 'deal out' a specified
+number of [7-character] license plates, displayed as a two-dimensional character
+matrix.  For example, when given a right argument of 3, DEAL will return a
+3x7 matrix, such as:
+
+      DEAL 3
+4ST7SM4
+XXW1X2X
+599E5EE
+
+While every 'DEAL 3' will have shape 3x7, the contents of the character
+matrix will vary each time (and in general, 'DEAL N' will have shape Nx7).
+
+The poker hand examples in my tutorial did not allow repeats, so the [dyadic]
+'deal' operator is not appropriate here.  To get random numbers, you'll need
+the 'roll' operator ('?', Page 51 of the APLX Language Manual).  My tutorial
+script always handed the roll operator a scalar integer; imagine what will
+happen if you give '?' a higher-dimensional object rather than a scalar
+(or, lacking imagination, experiment: e.g., '? 2 2 9' )
+
+The license plates in this programming assignment will always consist of 7
+characters, and every character must be either a letter or a number.  That is,
+the characters must come from the set:
+0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ
+(This is predefined in the p2 workspace as the variable CHARS.)
+
+Be careful to ensure that DEAL *returns* an array of plates, rather than just
+*printing* an array of plates.  That is, make sure you understand why I have:
+HAND <-
+...on both line [0] and line [1] of the POKER_DEAL function on page 82.
+This is important, because the next function (SCORE) needs to be able to
+use the value that DEAL returns.  NOTE:  The first line mentioning 'HAND'
+is line [0] of the function.  The line on page 82 just above that (the one
+with the rectangle inside of square brackets) is what I had to type into
+the session window to get APL to display the lines of the function -- it's
+not something you should try to reproduce in the editor window!
+
+(2) Create a function called SCORE which will take the sort of output that
+DEAL produces and determine the 'winner' of this poker round, by ordering
+the license plates from best to worst.  Most of the time, a simple additive
+scoring algorithm will determine the correct ordering.  Here's how:
+Just as in 'real' poker, a pair of 8's beats a pair of 3's, so each character
+is given a different 'weight', from 1 to 36, in the order
+0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ
+(so, 0 has weight 1, A has weight 11, Z has weight 36, etc.).  A pair of A's
+will be scored as 11, a pair of Z's counts as 36, and so on.
+What if we have three-of-a-kind?  In this case, we multiply the weight by 100,
+so three 0's is worth 1*100, 3 Z's is worth 36*100, etc.
+For four-of-a-kind, we multiply the weight by 10000, so four A's is 11*10000.
+For five-of-a kind, multiply by 1000000, six-of-a-kind uses 100000000 (10^8),
+and seven-of-a-kind uses 10000000000 (10^10).
+
+Let's score the earlier example:
+4ST7SM4 5 + 29  (a pair of 4's and a pair of S's)
+XXW1X2X 34*10000 (four X's)
+599E5EE 15*100 + 6 + 10 (three E's, a pair of 5's and a pair of 9's)
+
+Your SCORE function should calculate these weights, then reorder the license
+plates accordingly, and print the weights after each plate.  In this example,
+the proper output would be:
+XXW1X2X 340000
+599E5EE 1516
+4ST7SM4 34
+
+Your SCORE function will behave differently, depending on the 'shape' of the
+argument it is given.  If SCORE is given an Nx7 array of characters (such as
+the predefined CAR5 array), it should treat this array as the set of license
+plates to score.  If given a scalar as an argument, SCORE should use this
+integer to first create a set of [random] license plates and then score them.
+For example,
+SCORE 4
+should behave the same as
+SCORE (DEAL 4)
+(that is, you should have your SCORE function call DEAL when needed).
+
+Page 69 of ~cs320/APLX_Language_Manual.pdf shows how to test for the
+shape; you can then use the result in a branching 'if' statement, much
+like they show on Page 29 [but beware of the misprint: they use an 'equal'
+(Shift-5) where their logic indicates that they really wanted 'not-equal'
+(Shift-8)].  Except for this one issue, you should NOT be using any sort of
+branch or loop in either function -- make use of the power of arrays and
+the array manipulation operators!  If you find that you've written a similar
+expression on multiple lines, that's an indication that you should be doing
+the operation only ONCE, but with a higher-dimension object.  That is,
+if you do a computation with 2, then with 3, 4, 5, 6, 7 -- you really
+should just be doing that computation using the vector 2 3 4 5 6 7.
+
+There is often a common misconception about how DEAL and SCORE receive input.
+Neither of these functions should be asking for keyboard input -- that's
+_NOT_ what the specs say to do!  For example, in the POKER_DEAL function
+illustrated in my tutorial, if I wanted 7 cards, I typed:
+POKER_DEAL 7
+...I didn't type just POKER_DEAL and then prompt the user to enter a 7 after
+the function starts running.  Follow the specs (and the examples)!
+
+For both DEAL and SCORE, use the same parameter-passing technique as was
+illustrated in POKER_DEAL.
+
+If you order the license plates based on the scoring function outlined above,
+you can receive at least 90% of the credit for the assignment.  However,
+the scores are not always reflective of the 'winning hand'.  To be assured
+of 100% of the credit you should use the more accurate scoring method
+outlined next.  (If only a few people successfully do this, the winners may
+well get much more than 100%!)
+
+Here's the problem with the simple scoring already outlined:
+A license plate with 4-of-a-kind plus 3-of-a-kind should win over a
+license plate with just 4-of-a-kind.  Sometimes the scoring algorithm
+predicts this correctly, as in:
+
+XX11X1X 340200 (4-of-a-kind plus 3-of-a-kind)
+XXW1X2X 340000 (only 4-of-a-kind)
+
+but sometimes it doesn't:
+
+ZZZZ123 360000 (only 4-of-a-kind)
+XX11X1X 340200 (4-of-a-kind plus 3-of-a-kind)
+
+What really counts is how many of each type of the 'of-a-kind' combinations
+a license plate has.  A license plate like
+AAABBCC
+would be tallied as
+0 0 0 0 1 2 (zero 7-, 6-, 5-, or 4-of-a-kind, one 3-of-a-kind, two 2-of-a-kind)
+XX11X1X
+would be tallied as 0 0 0 1 1 0, and so on.  If you interpret these tallies
+as base-4 numbers, you get a nice numerical interpretation of the value of
+the 'hand' that makes it easy to sort them correctly.
+
+Almost.  Actually, we should still pay attention to the numerical scores
+when we otherwise have a 'tie' in the types of the 'of-a-kind' combinations.
+That is, 
+XX11X1X
+XX88X8X
+...will both tally as 0 0 0 1 1 0, which is nominally a tie.  Here, we need to
+use the scores 340200 and 340900 to favor XX99X9X over XX11X1X (9's beat 1's).
+Whether you do just the simple totaling or this more accurate tallying, you
+should report the totals to the right of each hand.  For example, CAR5 contains:
+
+XX11X1X
+XX88X8X
+Y000YYY
+ZZZZ789
+ABABABC
+
+...and SCORE CAR5 should produce:
+
+Y000YYY 350100
+XX88X8X 340900
+XX11X1X 340200
+ZZZZ789 360000
+ABABABC 2300
+
+(print it in this order if you implement the 100% version of the assignment,
+with tallying; if you do the simpler version, ZZZZ789 would be on top,
+since it has the highest numerical score)
+
+For full credit, it is all right to have SCORE and DEAL assume that
+they are being given a 'proper' argument (of the right kind and shape),
+but you can get extra credit by testing for this.  That is, if DEAL is
+given anything other than a scalar positive integer, you could test for
+this and complain (e.g., it was given a character, or a negative number,
+or an array of integers, or...)  Similarly, SCORE expects either a
+positive integer OR an Nx7 array of characters, where N is a positive integer.
+(You could even test for 'illegal' characters as '<' or 'a'; and neither
+function really should have a left-hand argument.)  This is the one other
+place where 'if' statements and branches would be OK to use, but again,
+error checking is NOT required for full credit.  (If you do go for the extra
+credit, be sure to note this with a 'yes' in the ident function.)
+
+Page 29 of ~cs320/APLX_Language_Manual.pdf shows the magic syntax for
+testing if a function has been invoked with two or only one parameter
+(by checking if the 'name classification' of the left-hand dummy variable
+is zero, and if so, branching to the line labeled 'START').  Remember,
+it's perfectly fine to 'reuse' such code verbatim, as long as you include
+a citation (e.g., "as per Page 29 of APLX_Language_Manual.pdf").  Actually,
+you don't want to use it verbatim -- they use an 'equal' (Shift-5) where
+their logic indicates that they really wanted 'not-equal' (Shift-8).
+
+WHAT TO HAND IN:
+1) You must have your APL workspace, named ~/Two/p2.dws in place by the due
+date (and it must be a different size than ~cs320/Two/p2.dws, indicating
+that you actually added something to my initial workspace!)  My automation will
+make a copy of this on the due date, which I will test 'by hand' (making sure
+SCORE gives the right output for CAR1 through CAR5, that DEAL works, etc.)
+
+2) A printout of your ident, DEAL, and SCORE functions, which you must submit
+at the BEGINNING of class the following day (the day after I do the electronic
+collection of the workspace; see ~cs320/calendar for the current due dates).
+This is easy to do using 'Print' under Windows; if you use Mac or Linux,
+you'll have to display the function as shown in the tutorial in my lab
+notes, then take a screenshot of your terminal window, and print that.
+
+Make sure that the ident that you print has the proper 'Yes' entries for
+the extra credit options you wish to have graded.  [Put ident first on
+the pages you submit, but also think about making it easy to pick your
+graded paper out of the pile later on -- writing you name up at the top
+will definitely make it easier to find...]
+
+EXTRA CREDIT:
+The file called ~/Two/GradeEarly (note the odd capitalization) is intended
+to signal that you have completed the project a week early, and wish to
+take advantage of the extra credit reward.  The contents of the file are
+immaterial; the autograder will only test for the existence of this file.
+If the file has been created by the 120% deadline, your project will be
+picked up for grading at that time (so no further changes to your code or
+documentation will be possible).  Your score will be augmented by 20% (for
+example, if you would have normally received 60% of the points, you will
+instead qualify for 72% of the points possible).  If you go over 100%, the
+extra points won't go to waste; they can boost your exam scores, if needed.
+
+GRADING CONSIDERATIONS:
+Don't forget that you're using an array-manipulation language.  In our
+APL samples, there were no loops demonstrated; whatever we needed to do,
+we did in parallel.  If you wind up processing each of the license plates
+in turn, you're not really learning how to use APL, and your grade will
+reflect that failure (doing things piecemeal is better than doing nothing,
+but not all that much better).  DEAL and SCORE could be one-line functions
+[I don't recommend putting everything on one line, but it's possible].  Make
+sure you understand how to make use of an outer product (Page 118); it lets
+you do far more than any sane person would reasonably expect.  (Don't confuse
+the tiny circle on the J key [the symbol you need] with the bigger circle
+on the O key [which does trig functions].)
+
+I've shown you a dozen ways to produce something as trivial as the evens
+with APL; if two students turn in similar solutions to these complicated
+tasks, don't expect to convince me this could happen by coincidence.
+These are NOT team projects -- you must do your own work!
+
+TIME-MANAGEMENT STRATEGIES:
+The tutorial in the class notes shows what happens when you type everything
+perfectly, and always use the syntax correctly.  Your first experiences with
+APL might be slightly less perfect.  You are likely to get some head-scratching
+errors, and get some output that is not at all what you expected.  I can help
+explain what APL is telling you, but if you try to do the entire assignment in
+the last week, you'll run across far more roadblocks than you will have time
+to ask about.  START EARLY!
+
+Strive for the extra-credit deadline.  If you finish by then, you can do the
+simpler version of the assignment and still score over 100% [once the extra
+credit is added on].  For many of you, you'll find that you'll really need
+to invest more time than you thought to get it done -- and it's better to
+discover that while you still have a week to complete it.
+
+I recommend figuring out how to score a single license plate (such as the
+one stored in CAR1) first; once you've got that worked out, there are then
+several ways to generalize your strategy to work with multiple license plates.
+
+NOTE: Our win/lose rules are simpler than actual poker rules.  In 'real'
+poker, the probability of a type of hand is used to determine if it 'wins'.
+Three-of-a-kind is less probable than a pair, so the pair loses in that matchup.
+It turns out that two three-of-a-kinds (e.g., AAABBBZ) is rarer than a
+four-of-a-kind (e.g., AAAA123), but by our simplified rules, the four-of-a-kind
+'wins' anyway.  Also, when the tallies match (such as in AAABBBZ and 111CCCZ),
+the 'best' face value wins out in 'real' poker (CCC is better than both AAA
+and BBB).  However, our version of scoring gives
+AAABBBZ 2300
+111CCCZ 1600
+...and so we let AAABBBZ 'beat' 111CCCZ.  So, if you actually play poker, don't
+let our 'kids in the back seat of the car' rules trouble you too much -- just
+score it as specified in the assignment, rather than emulating 'real' poker.
